@@ -1,8 +1,10 @@
-
+\
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Employee Skill Management</title>
@@ -21,12 +23,20 @@
 <body>
 
 <nav class="navbar navbar-dark bg-primary">
+
     <div class="container">
-        <a class="navbar-brand" href="/">
+
+        <a class="navbar-brand"
+           href="{{ url_for('ui.dashboard') }}">
+
             Employee Skill Management
+
         </a>
+
     </div>
+
 </nav>
+
 
 <div class="container mt-5">
 
@@ -36,84 +46,175 @@
         Manage employee skills, courses and learning recommendations.
     </p>
 
+
     <div class="row mt-4">
 
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>Employees</h5>
-                    <p>View and manage employees.</p>
 
-                    <a href="/employees/" class="btn btn-primary">
-                        View Employees
-                    </a>
-                </div>
-            </div>
-        </div>
+        <!-- Employees -->
 
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>Skills</h5>
-                    <p>View available skills.</p>
 
-                    <a href="/skills/" class="btn btn-primary">
-                        View Skills
-                    </a>
-                </div>
+            <div class="card p-3">
+
+                <h5>Employees</h5>
+
+                <p>
+                    View and manage employees.
+                </p>
+
+                <a
+                    href="{{ url_for('ui.employee_list') }}"
+                    class="btn btn-primary"
+                >
+
+                    View Employees
+
+                </a>
+
             </div>
+
         </div>
 
-      
+
+        <!-- Skills -->
 
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>Recommendations</h5>
-                    <p>Find employee skill gaps and courses.</p>
 
-                    <a href="/recommendations/1"
-                       class="btn btn-primary">
-                        View Recommendations
-                    </a>
-                </div>
+            <div class="card p-3">
+
+                <h5>Skills</h5>
+
+                <p>
+                    View employee skills and skill information.
+                </p>
+
+                <a
+                    href="{{ url_for('ui.skill_list') }}"
+                    class="btn btn-primary"
+                >
+
+                    View Skills
+
+                </a>
+
             </div>
+
         </div>
+
+
+        <!-- Courses -->
 
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>Enrollments</h5>
-                    <p>View employee course enrollments.</p>
 
-                    <a href="/enrollments/"
-                       class="btn btn-primary">
-                        View Enrollments
-                    </a>
-                </div>
+            <div class="card p-3">
+
+                <h5>Courses</h5>
+
+                <p>
+                    Explore available learning courses.
+                </p>
+
+                <a
+                    href="{{ url_for('ui.course_list') }}"
+                    class="btn btn-primary"
+                >
+
+                    View Courses
+
+                </a>
+
             </div>
+
         </div>
+
+
+        <!-- Recommendations -->
 
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>Reports</h5>
-                    <p>View dashboard and budget reports.</p>
 
-                    <a href="/reports/dashboard"
-                       class="btn btn-primary">
-                        View Reports
-                    </a>
-                </div>
+            <div class="card p-3">
+
+                <h5>Recommendations</h5>
+
+                <p>
+                    Select an employee to view learning recommendations.
+                </p>
+
+                <a
+                    href="{{ url_for('ui.employee_list') }}"
+                    class="btn btn-success"
+                >
+
+                    Select Employee
+
+                </a>
+
             </div>
+
         </div>
+
+
+        <!-- Enrollments -->
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card p-3">
+
+                <h5>Enrollments</h5>
+
+                <p>
+                    View employee course enrollments.
+                </p>
+
+                <a
+                    href="{{ url_for('ui.enrollment_list') }}"
+                    class="btn btn-primary"
+                >
+
+                    View Enrollments
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Reports -->
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card p-3">
+
+                <h5>Reports</h5>
+
+                <p>
+                    View learning and employee reports.
+                </p>
+
+                <a
+                    href="{{ url_for('ui.report_dashboard') }}"
+                    class="btn btn-primary"
+                >
+
+                    View Reports
+
+                </a>
+
+            </div>
+
+        </div>
+
 
     </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
+
 </html>
-```

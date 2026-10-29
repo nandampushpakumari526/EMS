@@ -1,11 +1,9 @@
 
-from flask import Blueprint, render_template
+from flask import Blueprint, jsonify
 
-from app.repositories import employee_repository
+from app.services.recommendation_service import recommend_courses
 
-from app.services.recommendation_service import (
-    recommend_courses
-)
+from app.services.learning_path_service import generate_learning_path
 
 
 bp = Blueprint(
@@ -15,29 +13,29 @@ bp = Blueprint(
 )
 
 
-# --------------------------------
-# Employee Recommendations
-# --------------------------------
-
-@bp.route("/<int:employee_id>")
+@bp.route("/<int:employee_id>", methods=["GET"])
 def get_recommendations(employee_id):
 
-    employee = employee_repository.get_employee_by_id(
-        employee_id
-    )
-
-    if employee is None:
-        return "Employee not found", 404
-
-    recommendations = recommend_courses(
-        employee_id
-    )
+    recommendations = recommend_courses(employee_id)
 
     if recommendations is None:
-        recommendations = []
 
-    return render_template(
-        "recommendations/recommendation_list.html",
-        employee=employee,
-        recommendations=recommendations
-    )
+        return jsonify({
+            "error": "Employee not found"
+        }), 404
+
+    return jsonify(recommendations)
+
+
+@bp.route("/learning-path/<int:employee_id>", methods=["GET"])
+def get_learning_path(employee_id):
+
+    learning_path = generate_learning_path(employee_id)
+
+    if learning_path is None:
+
+        return jsonify({
+            "error": "Employee not found"
+        }), 404
+
+    return jsonify(learning_path)

@@ -64,14 +64,16 @@
 
 <body>
 
+
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
 
-        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+        <a class="navbar-brand" href="{{ url_for('ui.dashboard') }}">
             LearnPath
         </a>
 
-        <button class="navbar-toggler" type="button"
+        <button class="navbar-toggler"
+                type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#navbarMenu">
 
@@ -85,63 +87,59 @@
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('dashboard') }}">
+                       href="{{ url_for('ui.dashboard') }}">
                         Dashboard
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('employee_list') }}">
+                       href="{{ url_for('ui.employee_list') }}">
                         Employees
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('skill_list') }}">
+                       href="{{ url_for('ui.skill_list') }}">
                         Skills
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('course_list') }}">
+                       href="{{ url_for('ui.course_list') }}">
                         Courses
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('recommendation_list') }}">
+                       href="{{ url_for('ui.employee_list') }}">
                         Recommendations
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('enrollment_list') }}">
+                       href="{{ url_for('ui.enrollment_list') }}">
                         Enrollments
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('reports') }}">
+                       href="{{ url_for('ui.report_dashboard') }}">
                         Reports
                     </a>
                 </li>
 
             </ul>
 
-            <a href="{{ url_for('logout') }}"
-               class="btn btn-outline-light btn-sm">
-                Logout
-            </a>
-
         </div>
     </div>
 </nav>
+
 
 <div class="container-fluid main-content">
 
