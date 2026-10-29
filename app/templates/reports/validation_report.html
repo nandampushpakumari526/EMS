@@ -1,0 +1,97 @@
+
+{% extends "base.html" %}
+
+{% block title %}Validation Report{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title mb-4">
+    Validation Report
+</h2>
+
+<div class="card p-4">
+
+    <h4>System Validation</h4>
+
+    <p>
+        This report displays validation results
+        for employees, skills, courses,
+        recommendations, and learning paths.
+    </p>
+
+    <hr>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>Validation Check</th>
+                <th>Result</th>
+                <th>Details</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in validation_results %}
+
+            <tr>
+
+                <td>
+                    {{ item.check_name }}
+                </td>
+
+                <td>
+
+                    {% if item.status == "Passed" %}
+
+                    <span class="badge bg-success">
+                        Passed
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-danger">
+                        Failed
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ item.details }}
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="3" class="text-center">
+                    No validation results available.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="mt-3">
+
+    <a href="{{ url_for('reports') }}"
+       class="btn btn-secondary">
+        Back to Reports
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+
+{% extends "base.html" %}
+
+{% block title %}Employee Details{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title mb-4">
+    Employee Details
+</h2>
+
+<div class="card p-4">
+
+    <h4>{{ employee.name }}</h4>
+
+    <hr>
+
+    <p>
+        <strong>Employee ID:</strong>
+        {{ employee.id }}
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        {{ employee.email }}
+    </p>
+
+    <p>
+        <strong>Role:</strong>
+        {{ employee.role.name if employee.role else employee.role_id }}
+    </p>
+
+    <p>
+        <strong>Department:</strong>
+        {{ employee.department|default("Not assigned") }}
+    </p>
+
+    <p>
+        <strong>Experience:</strong>
+        {{ employee.experience|default(0) }} years
+    </p>
+
+    <div class="mt-3">
+
+        <a href="{{ url_for('employee_edit', employee_id=employee.id) }}"
+           class="btn btn-warning">
+            Edit Employee
+        </a>
+
+        <a href="{{ url_for('skill_gap', employee_id=employee.id) }}"
+           class="btn btn-primary">
+            View Skill Gap
+        </a>
+
+        <a href="{{ url_for('employee_list') }}"
+           class="btn btn-secondary">
+            Back
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

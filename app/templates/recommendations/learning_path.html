@@ -1,0 +1,67 @@
+
+{% extends "base.html" %}
+
+{% block title %}Learning Path{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title mb-4">
+    Learning Path
+</h2>
+
+<div class="card p-4">
+
+    {% if learning_path %}
+
+    <div class="list-group">
+
+        {% for item in learning_path %}
+
+        <div class="list-group-item">
+
+            <h5>
+                Step {{ loop.index }}:
+                {{ item.course.title }}
+            </h5>
+
+            <p>
+                Skill:
+                {{ item.skill.name }}
+            </p>
+
+            <p>
+                Duration:
+                {{ item.course.duration_hours|default(0) }} hours
+            </p>
+
+            <p>
+                Cost:
+                ₹{{ item.course.cost|default(0) }}
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <p>
+        No learning path available.
+    </p>
+
+    {% endif %}
+
+</div>
+
+<div class="mt-3">
+
+    <a href="{{ url_for('recommendation_list') }}"
+       class="btn btn-primary">
+        Back to Recommendations
+    </a>
+
+</div>
+
+{% endblock %}

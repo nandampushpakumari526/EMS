@@ -1,0 +1,171 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Course Recommendations
+{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title mb-3">
+    Course Recommendations
+</h2>
+
+<div class="card p-3 mb-4">
+
+    <h5>
+        Employee: {{ employee.name }}
+    </h5>
+
+    <p class="mb-0">
+        Department: {{ employee.department }}
+    </p>
+
+</div>
+
+<div class="row g-4">
+
+    {% for item in recommendations %}
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm p-3 h-100">
+
+            <h5>
+                {{ item.course_title }}
+            </h5>
+
+            <hr>
+
+            <p>
+                <strong>Skill:</strong>
+                {{ item.skill_name }}
+            </p>
+
+            <p>
+                <strong>Current Level:</strong>
+                {{ item.current_level }}
+            </p>
+
+            <p>
+                <strong>Required Level:</strong>
+                {{ item.required_level }}
+            </p>
+
+            <p>
+                <strong>Skill Gap:</strong>
+                {{ item.gap }}
+            </p>
+
+            <p>
+                <strong>Cost:</strong>
+                ₹{{ item.cost }}
+            </p>
+
+            <p>
+                <strong>Duration:</strong>
+                {{ item.duration_hours }} hours
+            </p>
+
+            <p>
+                <strong>Prerequisites:</strong>
+
+                {% if item.prerequisites_met %}
+                    <span class="text-success">
+                        Completed
+                    </span>
+                {% else %}
+                    <span class="text-danger">
+                        Not completed
+                    </span>
+                {% endif %}
+
+            </p>
+
+            <p>
+                <strong>Budget:</strong>
+
+                {% if item.budget_available %}
+                    <span class="text-success">
+                        Available
+                    </span>
+                {% else %}
+                    <span class="text-danger">
+                        Not available
+                    </span>
+                {% endif %}
+
+            </p>
+
+            <p>
+                {{ item.budget_message }}
+            </p>
+
+            {% if item.missing_prerequisites %}
+
+            <div class="alert alert-warning">
+
+                <strong>Missing Prerequisites:</strong>
+
+                <ul class="mb-0">
+
+                    {% for prerequisite in item.missing_prerequisites %}
+
+                    <li>
+                        {{ prerequisite.course_name }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+            {% if item.prerequisites_met and item.budget_available %}
+
+            <form
+                action="{{ url_for('enrollments.enroll', employee_id=employee.id, course_id=item.course_id) }}"
+                method="POST"
+            >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Enroll Employee
+                </button>
+
+            </form>
+
+            {% else %}
+
+            <button
+                class="btn btn-secondary"
+                disabled
+            >
+                Enrollment Not Available
+            </button>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="col-12">
+
+        <div class="alert alert-info">
+            No course recommendations available.
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title mb-4">
+    Learning Reports
+</h2>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+
+        <div class="card p-4">
+
+            <h5>Total Employees</h5>
+
+            <h2 class="text-primary">
+                {{ total_employees|default(0) }}
+            </h2>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card p-4">
+
+            <h5>Skill Gaps</h5>
+
+            <h2 class="text-danger">
+                {{ total_skill_gaps|default(0) }}
+            </h2>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card p-4">
+
+            <h5>Completed Courses</h5>
+
+            <h2 class="text-success">
+                {{ completed_courses|default(0) }}
+            </h2>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card p-4 mt-4">
+
+    <h4>Reports</h4>
+
+    <p>
+        Analyze employee skills, learning progress,
+        recommendations, and course completion.
+    </p>
+
+    <a href="{{ url_for('validation_report') }}"
+       class="btn btn-primary">
+        View Validation Report
+    </a>
+
+</div>
+
+{% endblock %}

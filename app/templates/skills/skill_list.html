@@ -1,0 +1,63 @@
+html
+{% extends "base.html" %}
+
+{% block title %}Skills{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title mb-4">
+    Skills
+</h2>
+
+<div class="card p-3">
+
+    <table class="table table-striped">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Skill Name</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for skill in skills %}
+
+            <tr>
+
+                <td>{{ skill.id }}</td>
+
+                <td>{{ skill.name }}</td>
+
+                <td>
+                    {{ skill.category|default("General") }}
+                </td>
+
+                <td>
+                    {{ skill.description|default("No description") }}
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="4" class="text-center">
+                    No skills found.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

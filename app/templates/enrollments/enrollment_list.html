@@ -1,0 +1,90 @@
+
+{% extends "base.html" %}
+
+{% block title %}Enrollments{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title mb-4">
+    Employee Enrollments
+</h2>
+
+<div class="card p-3">
+
+    <table class="table table-striped">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Employee</th>
+                <th>Course</th>
+                <th>Status</th>
+                <th>Enrollment Date</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for enrollment in enrollments %}
+
+            <tr>
+
+                <td>{{ enrollment.id }}</td>
+
+                <td>
+                    {{ enrollment.employee.name }}
+                </td>
+
+                <td>
+                    {{ enrollment.course.title }}
+                </td>
+
+                <td>
+
+                    {% if enrollment.status == "Completed" %}
+
+                    <span class="badge bg-success">
+                        Completed
+                    </span>
+
+                    {% elif enrollment.status == "In Progress" %}
+
+                    <span class="badge bg-primary">
+                        In Progress
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-warning text-dark">
+                        {{ enrollment.status }}
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ enrollment.enrollment_date }}
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="5" class="text-center">
+                    No enrollments found.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
