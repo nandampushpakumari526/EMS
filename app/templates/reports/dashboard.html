@@ -1,0 +1,61 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Reports Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Reports Dashboard</h2>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Total Courses</h5>
+                    <h3>{{ total_courses }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Total Employees</h5>
+                    <h3>{{ total_employees }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Total Skills</h5>
+                    <h3>{{ total_skills }}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h4>Quick Reports</h4>
+
+    <ul>
+        <li>
+            <a href="{{ url_for('reports.dashboard') }}">
+                Reports Dashboard
+            </a>
+        </li>
+    </ul>
+
+</div>
+
+{% endblock %}

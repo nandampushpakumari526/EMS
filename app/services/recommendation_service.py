@@ -1,78 +1,93 @@
-from app.models import (
-    Course,
-    CourseSkill
-)
-
-from app.services.skill_gap_service import (
-    calculate_skill_gaps
-)
-
-from app.services.prerequisite_service import (
-    check_prerequisites
-)
-
-from app.services.budget_service import (
-    check_budget
-)
+from app.services.skill_gap_service import calculate_skill_gaps
+from app.services.prerequisite_service import check_prerequisites
+from app.services.budget_service import check_budget
+from app.models import Course, CourseSkill
 
 
-def recommend_courses(employee_id):
+def recommend_courses(employee_id, fiscal_year=2026):
 
-    gaps = calculate_skill_gaps(
-        employee_id
-    )
+    # Step 1: Get employee skill gaps
+    gaps = calculate_skill_gaps(employee_id)
 
-    gap_skill_ids = []
-
-    for gap in gaps:
-
-        gap_skill_ids.append(
-            gap["skill_id"]
-        )
-
-    courses = Course.query.all()
+    if not gaps:
+        return []
 
     recommendations = []
 
-    for course in courses:
+    # Step 2: Check courses for each skill gap
+    for gap in gaps:
 
-        mappings = CourseSkill.query.filter_by(
-            course_id=course.id
+        skill_id = gap["skill_id"]
+        gap_level = gap["gap"]
+
+        # Step 3: Find courses that teach this skill
+        course_skills = CourseSkill.query.filter_by(
+            skill_id=skill_id
         ).all()
 
-        matched_skills = []
+        for course_skill in course_skills:
 
-        for mapping in mappings:
+            course = Course.query.get(
+                course_skill.course_id
+            )
 
-            if mapping.skill_id in gap_skill_ids:
+            if course is None:
+                continue
 
-                matched_skills.append(
-                    mapping.skill_id
-                )
+            # Step 4: Check prerequisites
+            prerequisites_met = check_prerequisites(
+                employee_id,
+                course.id
+            )
 
-        if len(matched_skills) == 0:
+            # Step 5: Check budget
+            budget_available = check_budget(
+                employee_id,
+                course.cost,
+                fiscal_year
+            )
 
-            continue
+            # Step 6: Prepare recommendation
+            recommendation = {
+                "employee_id": employee_id,
+                "course_id": course.id,
+                "course_name": course.course_name,
+                "skill_id": skill_id,
+                "skill_name": gap.get("skill_name"),
+                "gap": gap_level,
+                "cost": course.cost,
+                "duration_hours": course.duration_hours,
+                "prerequisites_met": prerequisites_met,
+                "budget_available": budget_available
+            }
 
-        eligible = check_prerequisites(
-            employee_id,
-            course.id
-        )
+            recommendations.append(
+                recommendation
+            )
 
-        affordable = check_budget(
-            course.cost
-        )
+    # Step 7: Remove duplicate courses
+    unique_recommendations = {}
 
-        recommendations.append({
+    for recommendation in recommendations:
 
-            "course": course,
+        course_id = recommendation["course_id"]
 
-            "matched_skills": matched_skills,
+        if course_id not in unique_recommendations:
 
-            "eligible": eligible,
+            unique_recommendations[course_id] = recommendation
 
-            "affordable": affordable
+    return list(
+        unique_recommendations.values()
+    )
 
-        })
 
-    return recommendations
+# Compatibility function
+def recommend_courses_for_employee(
+    employee_id,
+    fiscal_year=2026
+):
+
+    return recommend_courses(
+        employee_id,
+        fiscal_year
+    )
