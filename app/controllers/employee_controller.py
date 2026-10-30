@@ -1,16 +1,16 @@
 
-from flask import Blueprint, jsonify, request,render_template
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash
 
 from app import db
 
 from app.models import Employee, Role, AuditLog
 
+from app.repositories import employee_repository, skill_repository
+
 from app.services.skill_gap_service import (
-    calculate_skill_gaps,
     get_employee_skill_summary
 )
 
-from app.repositories import employee_repository,skill_repository
 
 bp = Blueprint(
     "employees",
@@ -19,116 +19,140 @@ bp = Blueprint(
 )
 
 
+# =========================
+# EMPLOYEE LIST
+# =========================
+
 @bp.route("/", methods=["GET"])
 def get_employees():
 
     employees = Employee.query.all()
 
-    result = []
-
-    for employee in employees:
-
-        result.append({
-
-            "id": employee.id,
-
-            "employee_code": employee.employee_code,
-
-            "name": employee.name,
-
-            "email": employee.email,
-
-            "department": employee.department,
-
-            "role": employee.role.name,
-
-            "status": employee.status
-
-        })
-
-    return jsonify(result)
-
-
-@bp.route("/<int:employee_id>", methods=["GET"])
-def get_employee(employee_id):
-
-    employee = employee_repository.get_employee_by_id(
-        employee_id
+    return render_template(
+        "employees/employee_list.html",
+        employees=employees
     )
 
-    if employee is None:
-        return "Employee not found", 404
 
-    skills = skill_repository.get_employee_skills(
-        employee_id
-    )
+# =========================
+# ADD EMPLOYEE FORM
+# =========================
+
+@bp.route("/create", methods=["GET"])
+def create_employee_form():
+
+    roles = Role.query.all()
 
     return render_template(
-        "employees/employee_detail.html",
-        employee=employee,
-        skills=skills
+        "employees/employee_form.html",
+        employee=None,
+        roles=roles
     )
+
+
+# =========================
+# CREATE EMPLOYEE
+# =========================
 
 @bp.route("/", methods=["POST"])
 def create_employee():
 
-    data = request.get_json(silent=True) or {}
+    # Read HTML form data
+    data = request.form
 
-    required_fields = [
-        "employee_code",
-        "name",
-        "email",
-        "department",
-        "role_id"
-    ]
+    employee_code = data.get("employee_code", "").strip()
+    name = data.get("name", "").strip()
+    email = data.get("email", "").strip()
+    department = data.get("department", "").strip()
+    role_id = data.get("role_id", "").strip()
+    status = data.get("status", "active")
 
-    for field in required_fields:
+    roles = Role.query.all()
 
-        if not data.get(field):
+    # Validate required fields
+    if not employee_code or not name or not email or not role_id:
 
-            return jsonify({
-                "error": f"{field} is required"
-            }), 400
+        flash("Please fill all required fields.", "danger")
 
-    role = Role.query.get(data["role_id"])
+        return render_template(
+            "employees/employee_form.html",
+            employee=None,
+            roles=roles
+        ), 400
+
+    # Validate role ID
+    try:
+        role_id = int(role_id)
+
+    except ValueError:
+
+        flash("Please select a valid role.", "danger")
+
+        return render_template(
+            "employees/employee_form.html",
+            employee=None,
+            roles=roles
+        ), 400
+
+    # Check role
+    role = db.session.get(Role, role_id)
 
     if role is None:
 
-        return jsonify({
-            "error": "Role not found"
-        }), 404
+        flash("Selected role does not exist.", "danger")
 
-    if Employee.query.filter_by(
-        employee_code=data["employee_code"]
-    ).first():
+        return render_template(
+            "employees/employee_form.html",
+            employee=None,
+            roles=roles
+        ), 400
 
-        return jsonify({
-            "error": "Employee code already exists"
-        }), 409
+    # Check duplicate employee code
+    existing_code = Employee.query.filter_by(
+        employee_code=employee_code
+    ).first()
 
-    if Employee.query.filter_by(
-        email=data["email"]
-    ).first():
+    if existing_code:
 
-        return jsonify({
-            "error": "Email already exists"
-        }), 409
+        flash("Employee code already exists.", "danger")
+
+        return render_template(
+            "employees/employee_form.html",
+            employee=None,
+            roles=roles
+        ), 400
+
+    # Check duplicate email
+    existing_email = Employee.query.filter_by(
+        email=email
+    ).first()
+
+    if existing_email:
+
+        flash("Email already exists.", "danger")
+
+        return render_template(
+            "employees/employee_form.html",
+            employee=None,
+            roles=roles
+        ), 400
 
     try:
 
+        # Create employee
         employee = Employee(
 
-            employee_code=data["employee_code"],
+            employee_code=employee_code,
 
-            name=data["name"],
+            name=name,
 
-            email=data["email"],
+            email=email,
 
-            department=data["department"],
+            department=department,
 
-            role_id=role.id,
+            role_id=role_id,
 
-            status="active"
+            status=status
 
         )
 
@@ -136,6 +160,7 @@ def create_employee():
 
         db.session.flush()
 
+        # Create audit log
         log = AuditLog(
 
             action="CREATE",
@@ -152,27 +177,64 @@ def create_employee():
 
         db.session.commit()
 
-        return jsonify({
+        flash("Employee added successfully!", "success")
 
-            "message": "Employee created successfully",
-
-            "employee_id": employee.id
-
-        }), 201
+        return redirect(
+            url_for("employees.get_employees")
+        )
 
     except Exception as error:
 
         db.session.rollback()
 
-        return jsonify({
-            "error": str(error)
-        }), 500
+        flash(
+            f"Error creating employee: {str(error)}",
+            "danger"
+        )
 
+        return render_template(
+            "employees/employee_form.html",
+            employee=None,
+            roles=Role.query.all()
+        ), 500
+
+
+# =========================
+# EMPLOYEE DETAILS
+# =========================
+
+@bp.route("/<int:employee_id>", methods=["GET"])
+def get_employee(employee_id):
+
+    employee = employee_repository.get_employee_by_id(
+        employee_id
+    )
+
+    if employee is None:
+
+        return "Employee not found", 404
+
+    skills = skill_repository.get_employee_skills(
+        employee_id
+    )
+
+    return render_template(
+        "employees/employee_detail.html",
+        employee=employee,
+        skills=skills
+    )
+
+
+# =========================
+# EMPLOYEE SKILL GAPS
+# =========================
 
 @bp.route("/<int:employee_id>/skill-gaps", methods=["GET"])
 def employee_skill_gaps(employee_id):
 
-    result = get_employee_skill_summary(employee_id)
+    result = get_employee_skill_summary(
+        employee_id
+    )
 
     if result is None:
 

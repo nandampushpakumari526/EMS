@@ -86,13 +86,27 @@
 
                         <!-- View Recommendations -->
 
-                        <a
+                        <!-- <a
                             href="{{ url_for('ui.recommendation_list', employee_id=employee.id) }}"
                             class="btn btn-sm btn-success">
 
                             Recommendations
 
-                        </a>
+                        </a> -->
+                        
+
+
+<a
+    href="{{ url_for('recommendations.get_recommendations', employee_id=employee.id) }}"
+    class="btn btn-sm btn-success">
+
+    <i class="bi bi-lightbulb"></i>
+    Recommendations
+
+</a>
+
+
+
 
                     </td>
 

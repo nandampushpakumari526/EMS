@@ -11,56 +11,111 @@
 
 <div class="card p-4">
 
-    {% if learning_path %}
+    <h4 class="mb-3">
+        Employee: {{ employee.name }}
+    </h4>
 
-    <div class="list-group">
+    {% if learning_path and learning_path.courses %}
 
-        {% for item in learning_path %}
-
-        <div class="list-group-item">
-
-            <h5>
-                Step {{ loop.index }}:
-                {{ item.course.title }}
-            </h5>
+        <div class="mb-3">
 
             <p>
-                Skill:
-                {{ item.skill.name }}
+                Total Courses:
+                {{ learning_path.total_courses }}
             </p>
 
             <p>
-                Duration:
-                {{ item.course.duration_hours|default(0) }} hours
+                Total Cost:
+                ₹{{ learning_path.total_cost }}
             </p>
 
             <p>
-                Cost:
-                ₹{{ item.course.cost|default(0) }}
+                Total Duration:
+                {{ learning_path.total_duration_hours }} hours
             </p>
 
         </div>
 
-        {% endfor %}
+        <div class="list-group">
 
-    </div>
+            {% for course in learning_path.courses %}
+
+                <div class="list-group-item mb-3">
+
+                    <h5>
+                        {{ course.course_name }}
+                    </h5>
+
+                    <p>
+                        Course ID:
+                        {{ course.course_id }}
+                    </p>
+
+                    <p>
+                        Skill:
+                        {{ course.skill_name }}
+                    </p>
+
+                    <p>
+                        Skill Gap:
+                        {{ course.gap }}
+                    </p>
+
+                    <p>
+                        Cost:
+                        ₹{{ course.cost }}
+                    </p>
+
+                    <p>
+                        Duration:
+                        {{ course.duration_hours }} hours
+                    </p>
+
+                    <p>
+                        Prerequisites:
+
+                        {% if course.prerequisites_met %}
+                            <span class="text-success">
+                                Completed
+                            </span>
+                        {% else %}
+                            <span class="text-danger">
+                                Not completed
+                            </span>
+                        {% endif %}
+
+                    </p>
+
+                    <p>
+                        Budget:
+
+                        {% if course.budget_available %}
+                            <span class="text-success">
+                                Available
+                            </span>
+                        {% else %}
+                            <span class="text-danger">
+                                Not available
+                            </span>
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
 
     {% else %}
 
-    <p>
-        No learning path available.
-    </p>
+        <div class="alert alert-info">
+
+            No learning path available for this employee.
+
+        </div>
 
     {% endif %}
-
-</div>
-
-<div class="mt-3">
-
-    <a href="{{ url_for('recommendation_list') }}"
-       class="btn btn-primary">
-        Back to Recommendations
-    </a>
 
 </div>
 

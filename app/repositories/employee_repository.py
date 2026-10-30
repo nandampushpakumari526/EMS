@@ -7,7 +7,13 @@ def get_all_employees():
 
 
 def get_employee_by_id(employee_id):
-    return db.session.get(Employee, employee_id)
+    
+    employee = db.session.get(
+        Employee,
+        employee_id
+    )
+
+    return employee
 
 
 def get_employee_by_code(employee_code):

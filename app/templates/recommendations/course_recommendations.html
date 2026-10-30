@@ -1,0 +1,192 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Course Recommendations
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-3">
+        Course Recommendations
+    </h2>
+
+    <div class="card p-3 mb-4">
+
+        <h5>Employee Details</h5>
+
+        <p>
+            <strong>Name:</strong>
+            {{ employee.name }}
+        </p>
+
+        <p>
+            <strong>Employee ID:</strong>
+            {{ employee.id }}
+        </p>
+
+        <p>
+            <strong>Role:</strong>
+            {{ employee.role.name if employee.role else employee.role_id }}
+        </p>
+
+    </div>
+
+    <div class="card p-3">
+
+        <h4>Recommended Courses</h4>
+
+        {% if recommendations %}
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Course</th>
+                            <th>Skill</th>
+                            <th>Current Level</th>
+                            <th>Required Level</th>
+                            <th>Gap</th>
+                            <th>Cost</th>
+                            <th>Duration</th>
+                            <th>Prerequisites</th>
+                            <th>Budget</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in recommendations %}
+
+                        <tr>
+
+                            <td>
+                                {{ item.course_name }}
+                            </td>
+
+                            <td>
+                                {{ item.skill_name }}
+                            </td>
+
+                            <td>
+                                {{ item.current_level }}
+                            </td>
+
+                            <td>
+                                {{ item.required_level }}
+                            </td>
+
+                            <td>
+                                {{ item.gap }}
+                            </td>
+
+                            <td>
+                                {{ item.cost }}
+                            </td>
+
+                            <td>
+                                {{ item.duration_hours }} hours
+                            </td>
+
+                            <td>
+
+                                {% if item.prerequisites_met %}
+
+                                    <span class="badge bg-success">
+                                        Met
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning">
+                                        Not Met
+                                    </span>
+
+                                    {% if item.missing_prerequisites %}
+
+                                        <ul>
+
+                                            {% for prerequisite in item.missing_prerequisites %}
+
+                                                <li>
+                                                    {{ prerequisite.course_name }}
+                                                </li>
+
+                                            {% endfor %}
+
+                                        </ul>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if item.budget_available %}
+
+                                    <span class="badge bg-success">
+                                        Available
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Not Available
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-warning">
+
+                No course recommendations available.
+
+                <br><br>
+
+                Check whether this employee has:
+
+                <ul>
+                    <li>Role skill targets</li>
+                    <li>Employee skill assessment records</li>
+                    <li>Skill-to-course mappings</li>
+                    <li>Courses in the database</li>
+                </ul>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <a
+        href="{{ url_for('ui.employee_list') }}"
+        class="btn btn-secondary mt-3">
+
+        Back to Employees
+
+    </a>
+
+</div>
+
+{% endblock %}

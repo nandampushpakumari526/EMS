@@ -194,32 +194,31 @@ def recommendation_list(employee_id):
 # Learning Path
 # -------------------------
 
+
 @ui_bp.route("/learning-path/<int:employee_id>")
 def learning_path(employee_id):
-
-    from app.services.recommendation_service import (
-        recommend_courses_for_employee
-    )
 
     from app.services.learning_path_service import (
         build_learning_path
     )
 
-    employee = employee_repository.get_employee_by_id(employee_id)
+    employee = employee_repository.get_employee_by_id(
+        employee_id
+    )
 
     if employee is None:
         return "Employee not found", 404
 
-    recommendations = recommend_courses_for_employee(employee_id)
-
-    learning_path = build_learning_path(recommendations)
+    # Pass employee ID, not recommendations
+    learning_path = build_learning_path(
+        employee_id
+    )
 
     return render_template(
         "recommendations/learning_path.html",
         employee=employee,
         learning_path=learning_path
     )
-
 
 # -------------------------
 # Enrollments

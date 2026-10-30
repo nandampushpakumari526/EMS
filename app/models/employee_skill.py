@@ -3,9 +3,13 @@ from app import db
 
 
 class EmployeeSkill(db.Model):
+
     __tablename__ = "employee_skills"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
     employee_id = db.Column(
         db.Integer,
@@ -24,7 +28,9 @@ class EmployeeSkill(db.Model):
         nullable=False
     )
 
-    assessed_date = db.Column(db.Date)
+    assessed_date = db.Column(
+        db.Date
+    )
 
     employee = db.relationship(
         "Employee",
@@ -37,13 +43,24 @@ class EmployeeSkill(db.Model):
     )
 
     __table_args__ = (
+
         db.UniqueConstraint(
             "employee_id",
             "skill_id",
             name="unique_employee_skill"
         ),
+
         db.CheckConstraint(
             "proficiency_level BETWEEN 1 AND 5",
             name="valid_proficiency"
         ),
+
     )
+
+    def __repr__(self):
+
+        return (
+            f"<EmployeeSkill "
+            f"employee_id={self.employee_id} "
+            f"skill_id={self.skill_id}>"
+        )
